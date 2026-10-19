@@ -29,7 +29,7 @@ scripts/serve.py     local test server
 python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8800
 ```
 
-## Deploy (Cloudflare Pages, connected to this GitHub repo)
+## Deploy (Cloudflare Pages project `mushroomatlas-web`, auto-deploys on every push to main)
 
 - Build command: `python3 scripts/build.py`
 - Output directory: `dist`
@@ -62,4 +62,4 @@ Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step
 - Photos are re-encoded in the browser before upload, which strips EXIF/GPS metadata.
 - Identification results are suggestions only; the app always shows a safety warning.
 
-Contact: info@mushroomatlas.eu. Distribution data: GBIF.
+Contact: info@mushroomatlas.eu (Zoho Mail free plan, EU; MX/SPF in Cloudflare DNS). Distribution data: GBIF.
