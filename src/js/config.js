@@ -1,7 +1,7 @@
 // Fill these in after creating the Supabase project (Project Settings → API).
 // The anon key is public by design; Row Level Security in the database protects the data.
-export const SUPABASE_URL = "";
-export const SUPABASE_ANON_KEY = "";
+export const SUPABASE_URL = "https://yntcqutgvfepweolgrwl.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InludGNxdXRndmZlcHdlb2xncndsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MTYyMjMsImV4cCI6MjEwNzk5MjIyM30.DjQ8ZXkSLGobMwKCN5YiBhKd4qxkLy9IZ0S5ovn8Cp4";
 
 export const LANGS = ["en","de","fr","es","it","pl","da","sv","lt","ru"];
 export const DEFAULT_LANG = "en";

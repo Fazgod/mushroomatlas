@@ -86,3 +86,9 @@ create table if not exists public.id_usage (
 create index if not exists id_usage_user_idx on public.id_usage (user_id, created_at desc);
 alter table public.id_usage enable row level security;
 create policy "id_usage: read own" on public.id_usage for select using (auth.uid() = user_id);
+
+-- 5. Explicit API grants (in case new tables are not auto-exposed)
+grant usage on schema public to anon, authenticated;
+grant select on public.profiles to authenticated;
+grant select, insert, update, delete on public.finds to authenticated;
+grant select on public.id_usage to authenticated;
