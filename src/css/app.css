@@ -237,3 +237,5 @@ footer b{color:var(--ink)}
 .chipline{display:flex;align-items:center;gap:8px}
 footer a{color:var(--moss)}
 @media (max-width:820px){.tools .btn.small:not(.ghost){display:none}}
+.nav a{white-space:nowrap}
+@media (max-width:460px){.tally{grid-template-columns:repeat(2,minmax(0,1fr))}.tally button:nth-child(2){border-right:0}.tally button{border-bottom:1px solid var(--line)}.tally span{overflow-wrap:normal;font-size:.66rem}}
