@@ -56,7 +56,7 @@ function header() {
     <a class="btn small" href="${ctx.url("add")}" data-link>+ ${L.add}</a>
     ${u ? `<a class="acct" href="${ctx.url("account")}" data-link title="${esc(L.account)}">${esc((u.user_metadata?.name || u.email || "?")[0].toUpperCase())}</a>`
         : `<a class="btn small ghost" href="${ctx.url("login")}" data-link>${L.signIn}</a>`}`;
-  $("#foot").innerHTML = `<div><b>Mushroom Atlas</b> · ${ctx.D.length} · © ${new Date().getFullYear()} · ${L.credit}: grybai.lt · GBIF · <a href="${ctx.url("plans")}" data-link>${L.pricing}</a></div><div>${L.foot} <b id="mail">info@grybai.lt</b></div>`;
+  $("#foot").innerHTML = `<div><b>Mushroom Atlas</b> · ${ctx.D.length} · © ${new Date().getFullYear()} · GBIF · <a href="${ctx.url("plans")}" data-link>${L.pricing}</a></div><div>${L.foot} <a id="mail" href="mailto:info@mushroomatlas.eu">info@mushroomatlas.eu</a></div>`;
 }
 function switchLangHref(l) { const p = location.pathname.split("/"); if (LANGS.includes(p[1])) p[1] = l; else return `/${l}/`; return p.join("/") + location.search; }
 

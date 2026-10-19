@@ -62,4 +62,4 @@ Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step
 - Photos are re-encoded in the browser before upload, which strips EXIF/GPS metadata.
 - Identification results are suggestions only; the app always shows a safety warning.
 
-Content: grybai.lt (with permission). Distribution data: GBIF.
+Contact: info@mushroomatlas.eu. Distribution data: GBIF.
