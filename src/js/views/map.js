@@ -1,5 +1,6 @@
 // Mushroom map (OpenStreetMap via Leaflet)
 import { listPublicFinds, photoUrl } from "../supabase.js";
+import { gbifKey, planLevel, hotspotLayer, detailNote } from "./hotspot.js";
 
 let Lf = null;
 export async function leaflet() {
@@ -22,13 +23,23 @@ export async function view(ctx, _arg, app) {
   const sp = new URLSearchParams(location.search).get("species");
   ctx.title = T.mapTitle;
   app.innerHTML = `<section class="pagehead"><h1>${T.mapTitle}</h1><p>${T.mapLead}</p>
-    ${sp && ctx.BY[sp] ? `<p class="chipline"><span class="chip" aria-pressed="true">${e(ctx.nm(ctx.BY[sp]))}</span> <a href="${ctx.url("map")}" data-link>✕</a></p>` : ""}</section>
+    <form class="hotpick" id="hotpick"><input id="hotq" list="hotlist" placeholder="${e(T.hotPick)}" autocomplete="off" value="${sp && ctx.BY[sp] ? e(ctx.nm(ctx.BY[sp])) : ""}">
+      ${sp ? `<a href="${ctx.url("map")}" data-link aria-label="✕">✕</a>` : ""}
+      <datalist id="hotlist">${ctx.D.map(m => `<option value="${e(ctx.nm(m))}">${e(m.lat)}</option>`).join("")}</datalist></form>
+    ${sp && ctx.BY[sp] ? `<p class="hint">${T.hotLead}</p><p class="hint" id="hotnote"></p>` : ""}</section>
     <div id="bigmap" class="bigmap"></div>
     <p class="empty" id="mapnote" hidden>${ctx.backendReady ? T.mapEmpty : T.backendSoon}</p>
     <div class="row" style="padding-block:16px 40px"><a class="btn" href="${ctx.url("add")}" data-link>+ ${T.add}</a></div>`;
   const L = await leaflet();
   const map = L.map("bigmap", { zoomControl: true }).setView([54.5, 15], 4);
   baseLayer(L).addTo(map);
+  const q = document.querySelector("#hotq");
+  q.onchange = () => { const m = ctx.D.find(o => ctx.nm(o) === q.value || o.lat === q.value); if (m) ctx.go(`${ctx.url("map")}?species=${m.s}`); };
+  document.querySelector("#hotpick").onsubmit = ev => { ev.preventDefault(); q.onchange(); };
+  if (sp && ctx.BY[sp]) {
+    const [key, level] = await Promise.all([gbifKey(sp), planLevel()]);
+    if (key) { hotspotLayer(L, key, level).addTo(map); document.querySelector("#hotnote").innerHTML = detailNote(ctx, level); }
+  }
   const layer = L.layerGroup().addTo(map);
   async function load() {
     const b = map.getBounds();

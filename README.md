@@ -59,6 +59,13 @@ and all free users together are capped at FREE_MONTHLY_BUDGET checks per month (
 
 Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step.
 
+## Hotspot maps
+
+Species hotspots come from GBIF's map API (`/v2/map/occurrence/adhoc`), filtered to CC0 and CC BY 4.0 records only,
+because the site sells plans and CC BY-NC data may not be used commercially. Species → GBIF keys live in `data/gbif.json`.
+Detail by plan (src/js/views/hotspot.js): Free ~20 km, Season Pass ~1 km, Supporter ~250 m.
+The limit is applied in the browser; the underlying records are public on GBIF anyway, so the plan pays for the tool, not secret data.
+
 ## Privacy
 
 - Public map shows finds on a ~1 km grid (`finds_public` view) unless the uploader chooses "exact".

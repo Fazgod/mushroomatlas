@@ -1,4 +1,5 @@
 // Catalogue, species pages and articles.
+import { mountSpeciesHotspot } from "./hotspot.js";
 const POP = ["azuolyninis-raudonvirsis","baravykas","gelsvoji-musmire","geltonasis-kazlekas","juosvazvynis-raudonvirsis","lepse","paprastoji-musmire","pusyninis-baravykas","raudonvirsis","valgomoji-voveraite"];
 const TYPES = ["valgomi","nevalgomi","nuodingi","kiti"];
 const FK = { rg:["N","W","C","S","E","ru"], v:["very","valuable","low"], se:["sp","su","au","wi"], h:["conif","decid","pine","spruce","oak","birch","park","meadow","wood","wet","sand"] };
@@ -59,6 +60,7 @@ export function species(ctx, slug) {
   const c = ctx.coll(), list = ctx.D.filter(o=>o.t===m.t).sort((a,b)=>c.compare(ctx.nm(a),ctx.nm(b)));
   const i = list.indexOf(m), pv = list[i-1], nx = list[i+1];
   const others = [...new Set(Object.entries(m.n).filter(([l,n])=>l!==ctx.lang&&n&&n!==ctx.nm(m)).map(([,n])=>n))].join(" · ");
+  setTimeout(() => mountSpeciesHotspot(ctx, slug), 0);
   const facts = [[L.f.lat,`<i>${e(m.lat)}</i>`],[L.f.group,e(L.groups[m.g]||"")],[L.f.habitat,e(x.habitat)],[L.f.season,e(x.season)],[L.f.features,e(x.features)]].filter(f=>f[1]);
   return `<nav class="crumbs"><a href="${ctx.url("")}" data-link>${L.back}</a> › <span>${L.types[m.t]}</span></nav>
   <article class="plate"><figure><img src="/img/${m.s}.webp" alt="${e(ctx.nm(m))}"><figcaption>${L.photo}</figcaption></figure>
@@ -70,6 +72,7 @@ export function species(ctx, slug) {
    ${m.eu?`<section class="dist"><h2>${L.dist}</h2><div class="regions">${["N","W","C","S","E"].map(r=>`<span class="reg ${m.eu.r.includes(r)?"on":""}">${L.rg[r]}</span>`).join("")}</div>
     <p>${L.distN(m.eu.n)}${m.eu.x.length?`. ${L.also}: ${m.eu.x.map(k=>L.rg[k]).join(", ")}.`:"."}</p>
     <p class="src"><a href="https://www.gbif.org/species/search?q=${encodeURIComponent(m.lat)}" target="_blank" rel="noopener">${L.gbif} ↗</a> · ${L.ltnote}</p></section>`:""}
+   <section class="dist"><h2>${L.hotTitle}</h2><p>${L.hotLead}</p><div id="hotmap" class="hotmap"></div><p class="src" id="hotnote"></p></section>
    <div class="prose">${(x.desc||[]).map(p=>`<p>${e(p)}</p>`).join("")}</div>
    <div class="row"><a class="btn ghost" href="${ctx.url("add")}?species=${m.s}" data-link>+ ${L.add}</a><a class="btn ghost" href="${ctx.url("map")}?species=${m.s}" data-link>🗺 ${L.map}</a></div>
    <div class="warn"><div>${L.warn}</div></div>
