@@ -37,7 +37,7 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 ## Backend setup (one time)
 
 1. **Supabase**: create a project (region: Frankfurt/eu-central-1). SQL Editor → run `supabase/migrations/001_init.sql`.
-2. Copy Project URL + anon key (Settings → API) into `src/js/config.js`.
+2. Also run `002_usage_plan.sql`. Copy Project URL + anon key (Settings → API) into `src/js/config.js`.
 3. **Google sign-in**: Google Cloud Console → OAuth client (Web). Authorised redirect URI:
    `https://<project-ref>.supabase.co/auth/v1/callback`. Paste client ID + secret into
    Supabase → Authentication → Providers → Google.
@@ -50,11 +50,12 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 
 | Plan | Price | Photo checks |
 |---|---|---|
-| Free | €0 | 5 photo checks / month |
-| Season Pass | €4.99 / year | 50 photo checks / year |
-| Supporter | €9.99 / year | 150 photo checks / year |
+| Free | €0 | 3 photo checks / month |
+| Season Pass | €4.99 / year | 40 photo checks / year |
+| Supporter | €9.99 / year | 100 photo checks / year |
 
-Kindwise charges ~€0.01–0.05 per check, so limits are set to stay below the plan price.
+Kindwise charges ~€0.01–0.05 per check (prepaid credits). Limits keep a fully-used plan below its price after VAT and card fees,
+and all free users together are capped at FREE_MONTHLY_BUDGET checks per month (default 300 ≈ €15).
 
 Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step.
 

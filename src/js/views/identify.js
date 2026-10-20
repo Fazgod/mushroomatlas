@@ -22,8 +22,9 @@ export async function view(ctx, _arg, app) {
     if (!inp.files[0]) return;
     btn.disabled = true; msg.textContent = "…"; out.innerHTML = "";
     try {
-      const r = await identify(inp.files[0]);
-      if (r.error === "quota") { msg.innerHTML = `${T.idOut} <a href="${ctx.url("plans")}" data-link>${T.pricing} →</a>`; return; }
+      const r = await identify(inp.files[0], ctx.lang);
+      if (r.error === "quota" || r.error === "busy") { msg.innerHTML = `${r.error === "busy" ? T.idBusy : T.idOut} <a href="${ctx.url("plans")}" data-link>${T.pricing} →</a>`; return; }
+      if (r.error) { msg.textContent = T.idDown; return; }
       msg.textContent = r.remaining != null ? T.idLeft(r.remaining) : "";
       const byLat = Object.fromEntries(ctx.D.map(m => [m.lat.toLowerCase(), m]));
       const rows = (r.suggestions || []).slice(0, 5).map(s => {
@@ -32,7 +33,7 @@ export async function view(ctx, _arg, app) {
           ${m ? card(ctx, m) : `<div class="card"><div class="bd"><h3>${e(s.name || s.latin)}</h3><div class="lat">${e(s.latin)}</div></div></div>`}</li>`;
       }).join("");
       out.innerHTML = `<h2 class="sub">${T.idMatches}</h2><ul class="matches">${rows}</ul>`;
-    } catch (err) { msg.textContent = "Error: " + (err.message || err); }
+    } catch (err) { msg.textContent = T.idDown; }
     finally { btn.disabled = false; }
   };
 }

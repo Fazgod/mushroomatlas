@@ -73,11 +73,11 @@ export async function addFind({ file, species_slug, species_guess, note, lat, ln
   return data;
 }
 
-export async function identify(file) {
+export async function identify(file, lang) {
   const c = await sb(); if (!c || !user) throw new Error("login");
   const blob = await cleanImage(file, 1024);
   const b64 = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(String(fr.result).split(",")[1]); fr.readAsDataURL(blob); });
-  const { data, error } = await c.functions.invoke("identify", { body: { image: b64 } });
-  if (error) throw error;
+  const { data, error } = await c.functions.invoke("identify", { body: { image: b64, lang } });
+  if (error) return { error: "unavailable" };
   return data; // { suggestions:[{latin, probability}], remaining }
 }

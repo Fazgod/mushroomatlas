@@ -39,7 +39,13 @@ export async function view(ctx, _arg, app) {
     for (const f of shown) {
       const m = ctx.BY[f.species_slug];
       const name = m ? ctx.nm(m) : (f.species_guess || "?");
-      L.marker([f.lat, f.lng], { icon: dot(L, COLORS[m?.t || ""]) }).addTo(layer).bindPopup(
+      const color = COLORS[m?.t || ""];
+      // Approximate finds: a ~1 km circle (stored location is snapped to a ~1 km grid).
+      // When zoomed far out the circle is too small to see, so a dot is shown instead.
+      const shape = f.is_exact || map.getZoom() < 11
+        ? L.marker([f.lat, f.lng], { icon: dot(L, color) })
+        : L.circle([f.lat, f.lng], { radius: 1000, color, weight: 2, fillColor: color, fillOpacity: 0.18 });
+      shape.addTo(layer).bindPopup(
         `<div class="pop">${f.photo_path ? `<img src="${photoUrl(f.photo_path)}" alt="">` : ""}<b>${e(name)}</b>${m ? `<br><a href="${ctx.url("species/" + m.s)}">${e(m.lat)}</a>` : ""}
          <br><small>${f.observed_at ? new Date(f.observed_at).toLocaleDateString(ctx.lang) : ""} · ${f.is_exact ? T.mapExact : T.mapApprox}</small></div>`);
     }

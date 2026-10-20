@@ -8,4 +8,4 @@ export const DEFAULT_LANG = "en";
 export const SITE = "https://mushroomatlas.eu";
 
 // Free identifications per month for signed-in free users (enforced server-side too)
-export const FREE_IDS_PER_MONTH = 5;
+export const FREE_IDS_PER_MONTH = 3;
