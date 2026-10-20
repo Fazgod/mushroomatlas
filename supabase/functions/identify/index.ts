@@ -3,7 +3,7 @@
 //
 // Returns { suggestions: [{ latin, name, probability }], remaining }
 //      or { error: "login" | "quota" | "busy" | "unavailable" | "image" }.
-// POST { action: "reward" } after two rewarded ads → { ok: true } or { error: "ad_limit" | "not_free" }.
+// POST { action: "reward" } after three rewarded ads → { ok: true } or { error: "ad_limit" | "not_free" }.
 // Suggestions are possibilities only; the app always shows a safety warning.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
@@ -14,10 +14,10 @@ const LIMITS: Record<string, { n: number; days: number }> = {
   season: { n: 40, days: 365 },    // €4.99 → max €2.00 in checks
   supporter: { n: 100, days: 365 }, // €9.99 → max €5.00 in checks
 };
-// Rewarded ads: a free user unlocks 1 check per 2 ads, at most AD_PER_DAY a day and AD_PER_MONTH a month.
-// Ad completion can't be verified server-side on the web, so these caps (and FREE_BUDGET) bound any abuse
-// (10 × €0.05 = €0.50 per user per month at most).
-const AD_PER_DAY = 2, AD_PER_MONTH = 10;
+// Rewarded ads: a free user unlocks 1 check per 3 ads, at most once every 7 days.
+// Ad completion can't be verified server-side on the web, so this cap (and FREE_BUDGET) bounds any abuse
+// (5 × €0.05 = €0.25 per user per month at most).
+const AD_PER_WEEK = 1, AD_PER_MONTH = 5;
 // All free users together can use at most this many checks per calendar month.
 const FREE_BUDGET = Number(Deno.env.get("FREE_MONTHLY_BUDGET") ?? "300");
 
@@ -52,9 +52,9 @@ Deno.serve(async (req) => {
 
     if (body.action === "reward") {
       if (plan !== "free") return json({ error: "not_free" });
-      const { count: today } = await admin.from("ad_rewards").select("id", { count: "exact", head: true })
-        .eq("user_id", user.id).gte("created_at", new Date(Date.now() - 864e5).toISOString());
-      if ((today ?? 0) >= AD_PER_DAY || bonus >= AD_PER_MONTH) return json({ error: "ad_limit" });
+      const { count: week } = await admin.from("ad_rewards").select("id", { count: "exact", head: true })
+        .eq("user_id", user.id).gte("created_at", new Date(Date.now() - 7 * 864e5).toISOString());
+      if ((week ?? 0) >= AD_PER_WEEK || bonus >= AD_PER_MONTH) return json({ error: "ad_limit" });
       await admin.from("ad_rewards").insert({ user_id: user.id });
       return json({ ok: true });
     }

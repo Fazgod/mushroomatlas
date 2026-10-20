@@ -1,6 +1,6 @@
 // Photo identification (suggestions only, with strong safety messaging)
 import { identify, currentUser, rewardAd } from "../supabase.js";
-import { adsEnabled, watchTwoAds } from "../ads.js";
+import { adsEnabled, watchAds } from "../ads.js";
 import { card } from "./atlas.js";
 import { planLevel } from "./hotspot.js";
 
@@ -28,7 +28,7 @@ export async function view(ctx, _arg, app) {
     try {
       if (free) {
         // Free users unlock each check by watching 2 rewarded ads.
-        const watched = await watchTwoAds(n => { msg.textContent = T.adStep(n); });
+        const watched = await watchAds(n => { msg.textContent = T.adStep(n); });
         if (!watched) { msg.textContent = T.adNone; return; }
         const g = await rewardAd();
         if (!g.ok) { msg.innerHTML = g.error === "ad_limit" ? `${T.adLimit} <a href="${ctx.url("plans")}" data-link>${T.pricing} →</a>` : T.idDown; return; }

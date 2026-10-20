@@ -36,9 +36,10 @@ function showOne() {
   });
 }
 
-// Two ads in a row; onStep(n) is called before ad n (1 or 2).
-export async function watchTwoAds(onStep) {
-  for (const n of [1, 2]) {
+export const ADS_PER_CHECK = 3;
+// Several ads in a row; onStep(n) is called before ad n (1..ADS_PER_CHECK).
+export async function watchAds(onStep) {
+  for (let n = 1; n <= ADS_PER_CHECK; n++) {
     onStep?.(n);
     if (!(await showOne())) return false;
   }
