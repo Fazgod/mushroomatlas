@@ -48,11 +48,13 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 
 ## Plans
 
-| Plan | Price | Identifications |
+| Plan | Price | Photo checks |
 |---|---|---|
-| Free | €0 | 5 / month |
-| Season Pass | €4.99 / year | 300 / year |
-| Supporter | €9.99 / year | unlimited |
+| Free | €0 | 5 photo checks / month |
+| Season Pass | €4.99 / year | 50 photo checks / year |
+| Supporter | €9.99 / year | 150 photo checks / year |
+
+Kindwise charges ~€0.01–0.05 per check, so limits are set to stay below the plan price.
 
 Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step.
 

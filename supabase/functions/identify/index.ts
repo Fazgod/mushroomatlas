@@ -8,8 +8,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const LIMITS: Record<string, { n: number; days: number }> = {
   free: { n: 5, days: 30 },
-  season: { n: 300, days: 365 },
-  supporter: { n: 100000, days: 365 },
+  season: { n: 50, days: 365 },
+  supporter: { n: 150, days: 365 },
 };
 const cors = {
   "Access-Control-Allow-Origin": "*",
