@@ -10,13 +10,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 // Photo checks per user. Kindwise costs up to €0.05 per check, so the most a
 // fully-used plan can cost stays well below its price after VAT and card fees.
 const LIMITS: Record<string, { n: number; days: number }> = {
-  free: { n: 3, days: 30 },        // max €0.15 per free user per month
+  free: { n: 0, days: 30 },        // free users only get checks unlocked by watching ads
   season: { n: 40, days: 365 },    // €4.99 → max €2.00 in checks
   supporter: { n: 100, days: 365 }, // €9.99 → max €5.00 in checks
 };
-// Rewarded ads: a free user can earn 1 extra check per 2 ads, at most AD_PER_DAY a day and AD_PER_MONTH a month.
-// Ad completion can't be verified server-side on the web, so these caps bound any abuse (5 × €0.05 = €0.25/user/month).
-const AD_PER_DAY = 1, AD_PER_MONTH = 5;
+// Rewarded ads: a free user unlocks 1 check per 2 ads, at most AD_PER_DAY a day and AD_PER_MONTH a month.
+// Ad completion can't be verified server-side on the web, so these caps (and FREE_BUDGET) bound any abuse
+// (10 × €0.05 = €0.50 per user per month at most).
+const AD_PER_DAY = 2, AD_PER_MONTH = 10;
 // All free users together can use at most this many checks per calendar month.
 const FREE_BUDGET = Number(Deno.env.get("FREE_MONTHLY_BUDGET") ?? "300");
 
@@ -65,7 +66,7 @@ Deno.serve(async (req) => {
     const used = count ?? 0;
     if (used >= lim.n) {
       // Tell the app whether watching ads could unlock one more check.
-      const adOk = plan === "free" && bonus < AD_PER_MONTH;
+      const adOk = plan === "free" && bonus < AD_PER_MONTH;  // app may offer ads
       return json({ error: "quota", remaining: 0, adOk });
     }
 

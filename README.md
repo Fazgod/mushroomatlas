@@ -50,7 +50,7 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 
 | Plan | Price | Photo checks |
 |---|---|---|
-| Free | €0 | 3 photo checks / month |
+| Free | €0 | photo checks only after 2 rewarded ads (2/day, 10/month) |
 | Season Pass | €4.99 / year | 40 photo checks / year |
 | Supporter | €9.99 / year | 100 photo checks / year |
 
@@ -68,7 +68,8 @@ The limit is applied in the browser; the underlying records are public on GBIF a
 
 ## Rewarded ads (off until configured)
 
-Free users who run out of photo checks can watch 2 rewarded ads for 1 extra check (max 1/day, 5/month; counted in `ad_rewards`).
+Free users get no included photo checks: each check is unlocked by watching 2 rewarded ads (max 2/day, 10/month; counted in `ad_rewards`).
+Until ads are configured, free users see that photo checks come with a plan.
 To switch on: create a Google Ad Manager rewarded ad unit, put its path in `AD_UNIT_REWARDED` (src/js/config.js),
 set up Google's consent message (Privacy & messaging) for EU visitors, and update the privacy policy to mention ads.
 Run `003_ad_rewards.sql` once.
