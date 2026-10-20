@@ -3,6 +3,7 @@
 //
 // Returns { suggestions: [{ latin, name, probability }], remaining }
 //      or { error: "login" | "quota" | "busy" | "unavailable" | "image" }.
+// POST { action: "reward" } after two rewarded ads → { ok: true } or { error: "ad_limit" | "not_free" }.
 // Suggestions are possibilities only; the app always shows a safety warning.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
@@ -13,6 +14,9 @@ const LIMITS: Record<string, { n: number; days: number }> = {
   season: { n: 40, days: 365 },    // €4.99 → max €2.00 in checks
   supporter: { n: 100, days: 365 }, // €9.99 → max €5.00 in checks
 };
+// Rewarded ads: a free user can earn 1 extra check per 2 ads, at most AD_PER_DAY a day and AD_PER_MONTH a month.
+// Ad completion can't be verified server-side on the web, so these caps bound any abuse (5 × €0.05 = €0.25/user/month).
+const AD_PER_DAY = 1, AD_PER_MONTH = 5;
 // All free users together can use at most this many checks per calendar month.
 const FREE_BUDGET = Number(Deno.env.get("FREE_MONTHLY_BUDGET") ?? "300");
 
@@ -34,13 +38,36 @@ Deno.serve(async (req) => {
     const { data: prof } = await admin.from("profiles").select("plan, plan_expires_at").eq("id", user.id).single();
     let plan = prof?.plan ?? "free";
     if (plan !== "free" && prof?.plan_expires_at && new Date(prof.plan_expires_at) < new Date()) plan = "free";
-    const lim = LIMITS[plan] ?? LIMITS.free;
+    const lim = { ...(LIMITS[plan] ?? LIMITS.free) };
+    const body = await req.json();
+
+    // Rewards earned in the last 30 days add to the free allowance.
+    let bonus = 0;
+    if (plan === "free") {
+      const { count: b } = await admin.from("ad_rewards").select("id", { count: "exact", head: true })
+        .eq("user_id", user.id).gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString());
+      bonus = b ?? 0;
+    }
+
+    if (body.action === "reward") {
+      if (plan !== "free") return json({ error: "not_free" });
+      const { count: today } = await admin.from("ad_rewards").select("id", { count: "exact", head: true })
+        .eq("user_id", user.id).gte("created_at", new Date(Date.now() - 864e5).toISOString());
+      if ((today ?? 0) >= AD_PER_DAY || bonus >= AD_PER_MONTH) return json({ error: "ad_limit" });
+      await admin.from("ad_rewards").insert({ user_id: user.id });
+      return json({ ok: true });
+    }
+    lim.n += bonus;
 
     const since = new Date(Date.now() - lim.days * 864e5).toISOString();
     const { count } = await admin.from("id_usage").select("id", { count: "exact", head: true })
       .eq("user_id", user.id).gte("created_at", since);
     const used = count ?? 0;
-    if (used >= lim.n) return json({ error: "quota", remaining: 0 });
+    if (used >= lim.n) {
+      // Tell the app whether watching ads could unlock one more check.
+      const adOk = plan === "free" && bonus < AD_PER_MONTH;
+      return json({ error: "quota", remaining: 0, adOk });
+    }
 
     if (plan === "free") {
       const now = new Date();
@@ -50,7 +77,7 @@ Deno.serve(async (req) => {
       if ((freeUsed ?? 0) >= FREE_BUDGET) return json({ error: "busy" });
     }
 
-    const { image, lang } = await req.json();
+    const { image, lang } = body;
     if (!image) return json({ error: "image" }, 400);
 
     const key = Deno.env.get("KINDWISE_API_KEY");

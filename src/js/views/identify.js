@@ -1,5 +1,6 @@
 // Photo identification (suggestions only, with strong safety messaging)
-import { identify, currentUser } from "../supabase.js";
+import { identify, currentUser, rewardAd } from "../supabase.js";
+import { adsEnabled, watchTwoAds } from "../ads.js";
 import { card } from "./atlas.js";
 
 export async function view(ctx, _arg, app) {
@@ -23,7 +24,19 @@ export async function view(ctx, _arg, app) {
     btn.disabled = true; msg.textContent = "…"; out.innerHTML = "";
     try {
       const r = await identify(inp.files[0], ctx.lang);
-      if (r.error === "quota" || r.error === "busy") { msg.innerHTML = `${r.error === "busy" ? T.idBusy : T.idOut} <a href="${ctx.url("plans")}" data-link>${T.pricing} →</a>`; return; }
+      if (r.error === "quota" || r.error === "busy") {
+        msg.innerHTML = `${r.error === "busy" ? T.idBusy : T.idOut} <a href="${ctx.url("plans")}" data-link>${T.pricing} →</a>`
+          + (r.error === "quota" && r.adOk && adsEnabled() ? `<br><button type="button" class="btn ghost small" id="i-ads">▶ ${T.adOffer}</button>` : "");
+        const ab = document.querySelector("#i-ads");
+        if (ab) ab.onclick = async () => {
+          ab.disabled = true;
+          const ok = await watchTwoAds(n => { ab.textContent = T.adStep(n); });
+          if (!ok) { msg.textContent = T.adNone; return; }
+          const g = await rewardAd();
+          msg.textContent = g.ok ? T.adDone : g.error === "ad_limit" ? T.adLimit : T.idDown;
+        };
+        return;
+      }
       if (r.error) { msg.textContent = T.idDown; return; }
       msg.textContent = r.remaining != null ? T.idLeft(r.remaining) : "";
       const byLat = Object.fromEntries(ctx.D.map(m => [m.lat.toLowerCase(), m]));

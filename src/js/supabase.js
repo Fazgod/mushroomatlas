@@ -81,3 +81,11 @@ export async function identify(file, lang) {
   if (error) return { error: "unavailable" };
   return data; // { suggestions:[{latin, probability}], remaining }
 }
+
+// Record two watched rewarded ads → one extra photo check (capped server-side).
+export async function rewardAd() {
+  const c = await sb(); if (!c || !user) throw new Error("login");
+  const { data, error } = await c.functions.invoke("identify", { body: { action: "reward" } });
+  if (error) return { error: "unavailable" };
+  return data;
+}

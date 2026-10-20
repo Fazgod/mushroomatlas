@@ -66,6 +66,13 @@ because the site sells plans and CC BY-NC data may not be used commercially. Spe
 Detail by plan (src/js/views/hotspot.js): Free ~20 km, Season Pass ~1 km, Supporter ~250 m.
 The limit is applied in the browser; the underlying records are public on GBIF anyway, so the plan pays for the tool, not secret data.
 
+## Rewarded ads (off until configured)
+
+Free users who run out of photo checks can watch 2 rewarded ads for 1 extra check (max 1/day, 5/month; counted in `ad_rewards`).
+To switch on: create a Google Ad Manager rewarded ad unit, put its path in `AD_UNIT_REWARDED` (src/js/config.js),
+set up Google's consent message (Privacy & messaging) for EU visitors, and update the privacy policy to mention ads.
+Run `003_ad_rewards.sql` once.
+
 ## Privacy
 
 - Public map shows finds on a ~1 km grid (`finds_public` view) unless the uploader chooses "exact".
