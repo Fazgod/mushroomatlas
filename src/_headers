@@ -2,3 +2,9 @@
   Cache-Control: public, max-age=2592000
 /data/*
   Cache-Control: public, max-age=3600
+/js/*
+  Cache-Control: no-cache
+/css/*
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
