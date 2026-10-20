@@ -63,8 +63,13 @@ function switchLangHref(l) { const p = location.pathname.split("/"); if (LANGS.i
 let lastPath = "";
 async function render(keepScroll) {
   const r = parse();
-  if (!r.lang) { let l = DEFAULT_LANG; try { const s = localStorage.getItem("ma-lang"); if (LANGS.includes(s)) l = s; } catch (_) {} history.replaceState({}, "", `/${l}/` + location.search + location.hash); return render(); }
+  if (!r.lang) {
+    let l = (navigator.languages || []).map(x => x.slice(0, 2).toLowerCase()).find(x => LANGS.includes(x)) || DEFAULT_LANG;
+    try { const s = localStorage.getItem("ma-lang"); if (LANGS.includes(s)) l = s; } catch (_) {}
+    history.replaceState({}, "", `/${l}/` + location.search + location.hash); return render();
+  }
   if (r.lang !== ctx.lang) { ctx.lang = r.lang; try { localStorage.setItem("ma-lang", r.lang); } catch (_) {} }
+  document.cookie = `ma-lang=${ctx.lang}; path=/; max-age=31536000; SameSite=Lax; Secure`;
   document.documentElement.lang = ctx.lang;
   header();
   const app = $("#app");

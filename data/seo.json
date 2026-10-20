@@ -1,0 +1,162 @@
+{
+"en": {
+"h1": "Mushroom Atlas",
+"lead": "An illustrated atlas of Europe's mushrooms, from Scandinavia to the Mediterranean and from the Atlantic to Russia. Edible, inedible and poisonous species, with photos, descriptions and advice for foragers.",
+"types": {
+"valgomi": "Edible",
+"nevalgomi": "Inedible",
+"nuodingi": "Poisonous",
+"kiti": "Other"
+},
+"nav": [
+"Catalogue",
+"About fungi",
+"Interesting"
+],
+"read": "Read"
+},
+"de": {
+"h1": "Pilzatlas",
+"lead": "Ein illustrierter Atlas der Pilze Europas – von Skandinavien bis zum Mittelmeer und vom Atlantik bis nach Russland. Essbare, ungenießbare und giftige Arten mit Fotos, Beschreibungen und Tipps für Pilzsammler.",
+"types": {
+"valgomi": "Essbar",
+"nevalgomi": "Ungenießbar",
+"nuodingi": "Giftig",
+"kiti": "Sonstige"
+},
+"nav": [
+"Katalog",
+"Über Pilze",
+"Wissenswertes"
+],
+"read": "Lesen"
+},
+"fr": {
+"h1": "Atlas des champignons",
+"lead": "Un atlas illustré des champignons d'Europe – de la Scandinavie à la Méditerranée et de l'Atlantique à la Russie. Espèces comestibles, non comestibles et toxiques, avec photos, descriptions et conseils aux cueilleurs.",
+"types": {
+"valgomi": "Comestibles",
+"nevalgomi": "Non comestibles",
+"nuodingi": "Toxiques",
+"kiti": "Autres"
+},
+"nav": [
+"Catalogue",
+"Les champignons",
+"À savoir"
+],
+"read": "Lire"
+},
+"es": {
+"h1": "Atlas de setas",
+"lead": "Un atlas ilustrado de las setas de Europa, de Escandinavia al Mediterráneo y del Atlántico a Rusia. Especies comestibles, no comestibles y tóxicas con fotos, descripciones y consejos para recolectores.",
+"types": {
+"valgomi": "Comestibles",
+"nevalgomi": "No comestibles",
+"nuodingi": "Tóxicas",
+"kiti": "Otras"
+},
+"nav": [
+"Catálogo",
+"Sobre las setas",
+"Curiosidades"
+],
+"read": "Leer"
+},
+"it": {
+"h1": "Atlante dei funghi",
+"lead": "Un atlante illustrato dei funghi d'Europa – dalla Scandinavia al Mediterraneo e dall'Atlantico alla Russia. Specie commestibili, non commestibili e velenose con foto, descrizioni e consigli per i cercatori.",
+"types": {
+"valgomi": "Commestibili",
+"nevalgomi": "Non commestibili",
+"nuodingi": "Velenosi",
+"kiti": "Altri"
+},
+"nav": [
+"Catalogo",
+"Sui funghi",
+"Curiosità"
+],
+"read": "Leggi"
+},
+"pl": {
+"h1": "Atlas grzybów",
+"lead": "Ilustrowany atlas grzybów Europy – od Skandynawii po Morze Śródziemne i od Atlantyku po Rosję. Gatunki jadalne, niejadalne i trujące ze zdjęciami, opisami i poradami dla grzybiarzy.",
+"types": {
+"valgomi": "Jadalne",
+"nevalgomi": "Niejadalne",
+"nuodingi": "Trujące",
+"kiti": "Inne"
+},
+"nav": [
+"Katalog",
+"O grzybach",
+"Ciekawostki"
+],
+"read": "Czytaj"
+},
+"da": {
+"h1": "Svampeatlas",
+"lead": "Et illustreret atlas over Europas svampe – fra Skandinavien til Middelhavet og fra Atlanterhavet til Rusland. Spiselige, uspiselige og giftige arter med fotos, beskrivelser og råd til svampeplukkere.",
+"types": {
+"valgomi": "Spiselige",
+"nevalgomi": "Uspiselige",
+"nuodingi": "Giftige",
+"kiti": "Andre"
+},
+"nav": [
+"Katalog",
+"Om svampe",
+"Værd at vide"
+],
+"read": "Læs"
+},
+"sv": {
+"h1": "Svampatlas",
+"lead": "En illustrerad atlas över Europas svampar – från Skandinavien till Medelhavet och från Atlanten till Ryssland. Ätliga, oätliga och giftiga arter med foton, beskrivningar och råd till svampplockare.",
+"types": {
+"valgomi": "Ätliga",
+"nevalgomi": "Oätliga",
+"nuodingi": "Giftiga",
+"kiti": "Övriga"
+},
+"nav": [
+"Katalog",
+"Om svampar",
+"Bra att veta"
+],
+"read": "Läs"
+},
+"lt": {
+"h1": "Grybų atlasas",
+"lead": "Iliustruotas Europos grybų atlasas – nuo Skandinavijos iki Viduržemio jūros ir nuo Atlanto iki Rusijos. Valgomi, nevalgomi ir nuodingi grybai su nuotraukomis, aprašymais ir patarimais grybautojams.",
+"types": {
+"valgomi": "Valgomi",
+"nevalgomi": "Nevalgomi",
+"nuodingi": "Nuodingi",
+"kiti": "Kiti"
+},
+"nav": [
+"Katalogas",
+"Apie grybus",
+"Įdomu"
+],
+"read": "Skaityti"
+},
+"ru": {
+"h1": "Атлас грибов",
+"lead": "Иллюстрированный атлас грибов Европы — от Скандинавии до Средиземноморья и от Атлантики до России. Съедобные, несъедобные и ядовитые виды с фотографиями, описаниями и советами грибникам.",
+"types": {
+"valgomi": "Съедобные",
+"nevalgomi": "Несъедобные",
+"nuodingi": "Ядовитые",
+"kiti": "Прочие"
+},
+"nav": [
+"Каталог",
+"О грибах",
+"Интересное"
+],
+"read": "Читать"
+}
+}
