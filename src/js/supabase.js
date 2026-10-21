@@ -89,3 +89,11 @@ export async function rewardAd() {
   if (error) return { error: "unavailable" };
   return data;
 }
+
+// What photo checks the user has left: { plan, planLeft, packLeft, adLeft, adCanEarn }
+export async function idStatus() {
+  const c = await sb(); if (!c || !user) throw new Error("login");
+  const { data, error } = await c.functions.invoke("identify", { body: { action: "status" } });
+  if (error || !data || data.error) throw new Error("status");
+  return data;
+}

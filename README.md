@@ -31,13 +31,15 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 
 ## Deploy (Cloudflare Pages project `mushroomatlas-web`, auto-deploys on every push to main)
 
+Map backgrounds: OpenFreeMap vector tiles (free, commercial use allowed, no view limits) via MapLibre GL; falls back to OpenStreetMap raster.
+
 - Build command: `python3 scripts/build.py`
 - Output directory: `dist`
 
 ## Backend setup (one time)
 
 1. **Supabase**: create a project (region: Frankfurt/eu-central-1). SQL Editor → run `supabase/migrations/001_init.sql`.
-2. Also run `002_usage_plan.sql`. Copy Project URL + anon key (Settings → API) into `src/js/config.js`.
+2. Also run `002_usage_plan.sql`, `003_ad_rewards.sql` and `004_packs_settings.sql`. Copy Project URL + anon key (Settings → API) into `src/js/config.js`.
 3. **Google sign-in**: Google Cloud Console → OAuth client (Web). Authorised redirect URI:
    `https://<project-ref>.supabase.co/auth/v1/callback`. Paste client ID + secret into
    Supabase → Authentication → Providers → Google.
@@ -53,9 +55,11 @@ python3 scripts/build.py && python3 scripts/serve.py 8800   # http://localhost:8
 | Free | €0 | 1 photo check a week after 3 rewarded ads |
 | Season Pass | €4.99 / year | 40 photo checks / year |
 | Supporter | €9.99 / year | 100 photo checks / year |
+| Check pack | €1.99 once | 10 photo checks, no expiry |
 
 Kindwise charges ~€0.01–0.05 per check (prepaid credits). Limits keep a fully-used plan below its price after VAT and card fees,
-and all free users together are capped at FREE_MONTHLY_BUDGET checks per month (default 300 ≈ €15).
+and ad-unlocked checks for all free users together are capped per month by `app_settings.free_monthly_budget`
+(Supabase → Table Editor). Set it monthly to last month's ad income ÷ €0.05 so ads always pay for the checks they unlock.
 
 Payments (Stripe Checkout + webhook that sets `profiles.plan`) are the next step.
 

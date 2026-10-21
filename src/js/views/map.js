@@ -1,19 +1,46 @@
-// Mushroom map (OpenStreetMap via Leaflet)
+// Mushroom map (Leaflet). Background: OpenFreeMap vector tiles (free, commercial use allowed, no view limits),
+// drawn with MapLibre GL. Falls back to OpenStreetMap raster tiles if WebGL or the scripts are unavailable.
 import { listPublicFinds, photoUrl } from "../supabase.js";
 import { gbifKey, planLevel, hotspotLayer, detailNote } from "./hotspot.js";
 
 let Lf = null;
 export async function leaflet() {
   if (Lf) return Lf;
-  if (!document.querySelector("#leaflet-css")) {
-    const l = document.createElement("link"); l.id = "leaflet-css"; l.rel = "stylesheet";
-    l.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"; document.head.appendChild(l);
-  }
+  addCss("leaflet-css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
   Lf = (await import("https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js"));
   return Lf;
 }
+function addCss(id, href) {
+  if (document.getElementById(id)) return;
+  const l = document.createElement("link"); l.id = id; l.rel = "stylesheet"; l.href = href; document.head.appendChild(l);
+}
+const loadScript = src => new Promise((res, rej) => {
+  const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s);
+});
+const OFM_STYLE = "https://tiles.openfreemap.org/styles/liberty";
+const OFM_ATTR = '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+let glP = null;
+function loadGl(L) {
+  glP ||= (async () => {
+    addCss("maplibre-css", "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css");
+    await loadScript("https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js");
+    // The Leaflet plugin is a classic script that expects a global, extensible L.
+    if (!window.L) window.L = Object.assign({}, L);
+    await loadScript("https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js");
+    if (!window.L.maplibreGL) throw new Error("plugin");
+    return window.L.maplibreGL;
+  })();
+  return glP;
+}
+const hasWebGL = () => { try { const c = document.createElement("canvas"); return !!(c.getContext("webgl2") || c.getContext("webgl")); } catch { return false; } };
+const osm = L => L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' });
+
+// Returns a layer group right away; the background fills in when ready.
 export function baseLayer(L) {
-  return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' });
+  const g = L.layerGroup();
+  if (!hasWebGL()) { osm(L).addTo(g); return g; }
+  loadGl(L).then(gl => gl({ style: OFM_STYLE, attribution: OFM_ATTR }).addTo(g)).catch(() => osm(L).addTo(g));
+  return g;
 }
 const dot = (L, color) => L.divIcon({ className: "pin", html: `<span style="background:${color}"></span>`, iconSize: [18, 18], iconAnchor: [9, 9] });
 const COLORS = { valgomi: "#2F7A43", nevalgomi: "#8A6A12", nuodingi: "#B3261E", kiti: "#5B6670", "": "#2C5A40" };

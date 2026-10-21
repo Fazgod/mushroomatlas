@@ -31,7 +31,7 @@ export function hotspotLayer(L, key, level) {
   const url = "https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@1x.png?srs=EPSG:3857&bin=hex"
     + `&hexPerTile=${lv.hex}&style=classic-noborder.poly&taxonKey=${key}&license=CC0_1_0&license=CC_BY_4_0`;
   return L.tileLayer(url, {
-    maxNativeZoom: lv.nz, maxZoom: 18, opacity: 0.75, errorTileUrl: BLANK, className: "hotspot",
+    maxNativeZoom: lv.nz, maxZoom: 18, opacity: 0.75, errorTileUrl: BLANK, className: "hotspot", pane: "overlayPane", // above the GL background
     attribution: 'Records: <a href="https://www.gbif.org" target="_blank" rel="noopener">GBIF.org</a> (CC0, CC BY 4.0)',
   });
 }
